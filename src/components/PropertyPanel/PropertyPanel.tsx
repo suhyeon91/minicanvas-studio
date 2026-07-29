@@ -3,6 +3,7 @@ import { useEditorStore } from '../../store/editorStore';
 export function PropertyPanel() {
   const canvas = useEditorStore((state) => state.canvas);
   const selectedObject = useEditorStore((state) => state.selectedObject);
+  const pushHistory = useEditorStore((state) => state.pushHistory);
 
   if (!selectedObject) {
     return (
@@ -15,6 +16,7 @@ export function PropertyPanel() {
   const updateProp = (key: string, value: string | number) => {
     selectedObject.set(key, value);
     canvas?.requestRenderAll();
+    pushHistory();
   };
 
   return (

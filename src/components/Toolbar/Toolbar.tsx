@@ -1,8 +1,13 @@
 import * as fabric from 'fabric';
 import { useEditorStore } from '../../store/editorStore';
+import { Undo2, Redo2 } from 'lucide-react';
+
 
 export function Toolbar() {
   const canvas = useEditorStore((state) => state.canvas);
+  // 컴포넌트 내부에 추가
+  const undo = useEditorStore((state) => state.undo);
+  const redo = useEditorStore((state) => state.redo);
 
   const addRectangle = () => {
     if (!canvas) return;
@@ -60,6 +65,20 @@ export function Toolbar() {
         className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 text-sm font-medium"
       >
         텍스트
+      </button>
+      <button
+        onClick={undo}
+        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+        title="실행 취소"
+      >
+        <Undo2 size={18} />
+      </button>
+      <button
+        onClick={redo}
+        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+        title="다시 실행"
+      >
+        <Redo2 size={18} />
       </button>
     </div>
   );
