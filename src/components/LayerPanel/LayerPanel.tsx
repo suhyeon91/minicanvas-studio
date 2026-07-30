@@ -1,6 +1,6 @@
 import type { FabricObject } from 'fabric';
 import { useEditorStore } from '../../store/editorStore';
-import { Eye, EyeOff, ArrowUp, ArrowDown, Trash2, Square, Circle, Type } from 'lucide-react';
+import { Eye, EyeOff, ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 
 function getLabel(obj: FabricObject, index: number) {
   const type = obj.type ?? 'object';

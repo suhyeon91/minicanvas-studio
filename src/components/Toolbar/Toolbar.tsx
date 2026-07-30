@@ -1,13 +1,47 @@
 import * as fabric from 'fabric';
 import { useEditorStore } from '../../store/editorStore';
-import { Undo2, Redo2 } from 'lucide-react';
-
+import { useRef } from 'react';
+import { Save, FolderOpen, Download, Undo2, Redo2 } from 'lucide-react';
+import { exportJSON, exportPNG, importJSON } from '../../lib/canvas-utils';
 
 export function Toolbar() {
   const canvas = useEditorStore((state) => state.canvas);
-  // 컴포넌트 내부에 추가
+
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const pushHistory = useEditorStore((state) => state.pushHistory);
+  const refreshObjects = useEditorStore((state) => state.refreshObjects);
+
+  const handleSave = () => {
+    if (!canvas) return;
+    exportJSON(canvas);
+  };
+
+  const handleExportPNG = () => {
+    if (!canvas) return;
+    exportPNG(canvas);
+  };
+
+  const handleLoadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !canvas) return;
+
+    try {
+      await importJSON(canvas, file);
+      refreshObjects();
+      pushHistory();
+    } catch (err) {
+      alert('파일을 불러오는 중 오류가 발생했습니다.');
+      console.error(err);
+    }
+
+    e.target.value = ''; // 같은 파일 다시 선택 가능하도록 초기화
+  };
 
   const addRectangle = () => {
     if (!canvas) return;
@@ -79,6 +113,38 @@ export function Toolbar() {
         title="다시 실행"
       >
         <Redo2 size={18} />
+      </button>
+      <div className="w-px h-6 bg-gray-200 mx-1" /> {/* 구분선 */}
+
+      <button
+        onClick={handleSave}
+        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+        title="JSON으로 저장"
+      >
+        <Save size={18} />
+      </button>
+
+      <button
+        onClick={handleLoadClick}
+        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+        title="JSON 불러오기"
+      >
+        <FolderOpen size={18} />
+      </button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="application/json"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      <button
+        onClick={handleExportPNG}
+        className="px-3 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
+        title="PNG로 내보내기"
+      >
+        <Download size={18} />
       </button>
     </div>
   );
