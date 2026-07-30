@@ -52,6 +52,7 @@ export function Toolbar() {
       height: 80,
       fill: '#6366f1',
     });
+    rect.set('id', crypto.randomUUID()); // 고유 id 부여
     canvas.add(rect);
     canvas.setActiveObject(rect);
   };
@@ -64,6 +65,7 @@ export function Toolbar() {
       radius: 50,
       fill: '#ec4899',
     });
+    circle.set('id', crypto.randomUUID()); // 고유 id 부여
     canvas.add(circle);
     canvas.setActiveObject(circle);
   };
@@ -76,6 +78,7 @@ export function Toolbar() {
       fontSize: 24,
       fill: '#111827',
     });
+    text.set('id', crypto.randomUUID()); // 고유 id 부여
     canvas.add(text);
     canvas.setActiveObject(text);
   };

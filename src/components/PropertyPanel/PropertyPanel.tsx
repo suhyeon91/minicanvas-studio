@@ -19,8 +19,10 @@ export function PropertyPanel() {
     pushHistory();
   };
 
+  const objectId = String(selectedObject.get('id') ?? 'unknown');
+
   return (
-    <div className="w-64 p-4 bg-white border-l border-gray-200 space-y-4">
+    <div key={objectId} className="w-64 p-4 bg-white border-l border-gray-200 space-y-4">
       <h3 className="text-sm font-semibold text-gray-700">속성</h3>
 
       <div>
