@@ -4,12 +4,15 @@ import { PropertyPanel } from './components/PropertyPanel/PropertyPanel';
 import { LayerPanel } from './components/LayerPanel/LayerPanel';
 import { useEffect } from 'react';
 import { useEditorStore } from './store/editorStore';
-
+import { useDrawingTools } from './hooks/useDrawingTools';
 
 function App() {
+  useDrawingTools(); 
+  
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
 
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isCtrl = e.ctrlKey || e.metaKey;
@@ -24,7 +27,7 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [undo, redo]);
-  
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Toolbar />

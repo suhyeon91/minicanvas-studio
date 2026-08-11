@@ -3,7 +3,8 @@ import { useEditorStore } from '../../store/editorStore';
 import { useRef } from 'react';
 import { Save, FolderOpen, Download, Undo2, Redo2 } from 'lucide-react';
 import { exportJSON, exportPNG, importJSON } from '../../lib/canvas-utils';
-
+import { Minus, Pentagon } from 'lucide-react';
+ 
 export function Toolbar() {
   const canvas = useEditorStore((state) => state.canvas);
 
@@ -12,7 +13,9 @@ export function Toolbar() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const pushHistory = useEditorStore((state) => state.pushHistory);
   const refreshObjects = useEditorStore((state) => state.refreshObjects);
-
+  const mode = useEditorStore((state) => state.mode);
+  const setMode = useEditorStore((state) => state.setMode);
+  
   const handleSave = () => {
     if (!canvas) return;
     exportJSON(canvas);
@@ -102,6 +105,22 @@ export function Toolbar() {
         className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 text-sm font-medium"
       >
         텍스트
+      </button>
+      <button
+        onClick={() => setMode(mode === 'line' ? 'select' : 'line')}
+        className={`px-4 py-2 rounded-md text-sm font-medium ${mode === 'line' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        title="라인 도구"
+      >
+        <Minus size={18} />
+      </button>
+      <button
+        onClick={() => setMode(mode === 'polygon' ? 'select' : 'polygon')}
+        className={`px-4 py-2 rounded-md text-sm font-medium ${mode === 'polygon' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        title="다각형 도구 (더블클릭으로 완성)"
+      >
+        <Pentagon size={18} />
       </button>
       <button
         onClick={undo}

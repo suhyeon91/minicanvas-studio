@@ -2,8 +2,11 @@ import { create } from 'zustand';
 import type { Canvas, FabricObject } from 'fabric';
 
 const MAX_HISTORY = 50;
+type Mode = 'select' | 'line' | 'polygon';
 
 interface EditorState {
+  mode: Mode;
+  setMode: (mode: Mode) => void;
   canvas: Canvas | null;
   selectedObject: FabricObject | null;
   objects: FabricObject[];
@@ -25,7 +28,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   history: [],
   historyIndex: -1,
   isRestoring: false,
-
+  mode: 'select',
+  setMode: (mode) => set({ mode }),
   setCanvas: (canvas) => set({ canvas }),
   setSelectedObject: (obj) => set({ selectedObject: obj }),
 
