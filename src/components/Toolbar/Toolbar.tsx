@@ -1,10 +1,31 @@
 import * as fabric from 'fabric';
 import { useEditorStore } from '../../store/editorStore';
 import { useRef } from 'react';
-import { Save, FolderOpen, Download, Undo2, Redo2 } from 'lucide-react';
 import { exportJSON, exportPNG, importJSON } from '../../lib/canvas-utils';
-import { Minus, Pentagon } from 'lucide-react';
+import { Square, Circle, Type, Minus, Pentagon, Undo2, Redo2, Save, FolderOpen, Download } from 'lucide-react';
  
+function ToolButton({
+  active, onClick, title, children,
+}: {
+  active?: boolean;
+  onClick: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={title}
+      className={`p-2.5 rounded-lg transition-colors ${active
+          ? 'bg-indigo-500 text-white'
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+        }`}
+    >
+      {children}
+    </button>
+  );
+}
+
 export function Toolbar() {
   const canvas = useEditorStore((state) => state.canvas);
 
@@ -87,72 +108,51 @@ export function Toolbar() {
   };
 
   return (
-    <div className="flex gap-2 p-3 bg-white border-b border-gray-200">
-      <button
-        onClick={addRectangle}
-        className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 text-sm font-medium"
-      >
-        사각형
-      </button>
-      <button
-        onClick={addCircle}
-        className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 text-sm font-medium"
-      >
-        원
-      </button>
-      <button
-        onClick={addText}
-        className="px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 text-sm font-medium"
-      >
-        텍스트
-      </button>
-      <button
+    <div className="flex items-center gap-1 px-4 py-2.5 bg-white border-b border-gray-200">
+      {/* 도형/텍스트/드로잉 도구 */}
+      <ToolButton onClick={addRectangle} title="사각형">
+        <Square size={18} />
+      </ToolButton>
+      <ToolButton onClick={addCircle} title="원">
+        <Circle size={18} />
+      </ToolButton>
+      <ToolButton onClick={addText} title="텍스트">
+        <Type size={18} />
+      </ToolButton>
+      <ToolButton
+        active={mode === 'line'}
         onClick={() => setMode(mode === 'line' ? 'select' : 'line')}
-        className={`px-4 py-2 rounded-md text-sm font-medium ${mode === 'line' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
         title="라인 도구"
       >
         <Minus size={18} />
-      </button>
-      <button
+      </ToolButton>
+      <ToolButton
+        active={mode === 'polygon'}
         onClick={() => setMode(mode === 'polygon' ? 'select' : 'polygon')}
-        className={`px-4 py-2 rounded-md text-sm font-medium ${mode === 'polygon' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
         title="다각형 도구 (더블클릭으로 완성)"
       >
         <Pentagon size={18} />
-      </button>
-      <button
-        onClick={undo}
-        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        title="실행 취소"
-      >
+      </ToolButton>
+
+      <div className="w-px h-6 bg-gray-200 mx-2" />
+
+      {/* Undo/Redo */}
+      <ToolButton onClick={undo} title="실행 취소">
         <Undo2 size={18} />
-      </button>
-      <button
-        onClick={redo}
-        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        title="다시 실행"
-      >
+      </ToolButton>
+      <ToolButton onClick={redo} title="다시 실행">
         <Redo2 size={18} />
-      </button>
-      <div className="w-px h-6 bg-gray-200 mx-1" /> {/* 구분선 */}
+      </ToolButton>
 
-      <button
-        onClick={handleSave}
-        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        title="JSON으로 저장"
-      >
+      <div className="w-px h-6 bg-gray-200 mx-2" />
+
+      {/* 파일 입출력 */}
+      <ToolButton onClick={handleSave} title="JSON으로 저장">
         <Save size={18} />
-      </button>
-
-      <button
-        onClick={handleLoadClick}
-        className="px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-        title="JSON 불러오기"
-      >
+      </ToolButton>
+      <ToolButton onClick={handleLoadClick} title="JSON 불러오기">
         <FolderOpen size={18} />
-      </button>
+      </ToolButton>
       <input
         ref={fileInputRef}
         type="file"
@@ -161,12 +161,15 @@ export function Toolbar() {
         className="hidden"
       />
 
+      <div className="flex-1" />
+
+      {/* PNG 내보내기만 강조 */}
       <button
         onClick={handleExportPNG}
-        className="px-3 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
-        title="PNG로 내보내기"
+        className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600 transition-colors"
       >
-        <Download size={18} />
+        <Download size={16} />
+        내보내기
       </button>
     </div>
   );

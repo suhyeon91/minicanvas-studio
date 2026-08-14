@@ -1,18 +1,16 @@
+import { useEffect } from 'react';
 import { Canvas } from './components/Canvas/Canvas';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { PropertyPanel } from './components/PropertyPanel/PropertyPanel';
 import { LayerPanel } from './components/LayerPanel/LayerPanel';
-import { useEffect } from 'react';
-import { useEditorStore } from './store/editorStore';
 import { useDrawingTools } from './hooks/useDrawingTools';
+import { useEditorStore } from './store/editorStore';
 
 function App() {
-  useDrawingTools(); 
-  
+  useDrawingTools();
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
 
-  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const isCtrl = e.ctrlKey || e.metaKey;
@@ -29,11 +27,13 @@ function App() {
   }, [undo, redo]);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Toolbar />
-      <div className="flex flex-1 justify-center items-start gap-6 p-6">
+      <div className="flex flex-1 justify-center items-start gap-6 p-8">
         <LayerPanel />
-        <Canvas />
+        <div className="shadow-lg rounded-xl overflow-hidden">
+          <Canvas />
+        </div>
         <PropertyPanel />
       </div>
     </div>

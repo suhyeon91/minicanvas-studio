@@ -1,4 +1,5 @@
 import { useEditorStore } from '../../store/editorStore';
+import { MousePointerClick } from 'lucide-react';
 
 export function PropertyPanel() {
   const canvas = useEditorStore((state) => state.canvas);
@@ -7,8 +8,9 @@ export function PropertyPanel() {
 
   if (!selectedObject) {
     return (
-      <div className="w-64 p-4 bg-white border-l border-gray-200 text-sm text-gray-400">
-        오브젝트를 선택하세요
+      <div className="w-64 p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+        <MousePointerClick size={28} className="text-gray-300" />
+        <p className="text-sm text-gray-400">오브젝트를 선택하면<br />속성을 편집할 수 있어요</p>
       </div>
     );
   }
