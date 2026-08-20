@@ -1,10 +1,43 @@
 import type { Canvas } from 'fabric';
+import * as fabric from 'fabric';
 
 // JSON으로 저장 (파일 다운로드)
 export function exportJSON(canvas: Canvas, filename = 'minicanvas-project.json') {
   const json = canvas.toJSON();
   const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
   downloadBlob(blob, filename);
+}
+
+export function groupSelection(canvas: Canvas) {
+  const activeObj = canvas.getActiveObject();
+  if (!activeObj || activeObj.type !== 'activeselection') return;
+
+  const objectsToGroup = (activeObj as fabric.ActiveSelection).getObjects();
+  canvas.discardActiveObject();
+
+  const group = new fabric.Group(objectsToGroup);
+  group.set('id', crypto.randomUUID());
+
+  objectsToGroup.forEach((obj) => canvas.remove(obj));
+  canvas.add(group);
+  canvas.setActiveObject(group);
+  canvas.requestRenderAll();
+}
+
+export function ungroupSelection(canvas: Canvas) {
+  const activeObj = canvas.getActiveObject();
+  if (!activeObj || activeObj.type !== 'group') return;
+
+  const group = activeObj as fabric.Group;
+  const items = group.getObjects();
+
+  canvas.remove(group);
+  items.forEach((item) => {
+    canvas.add(item);
+  });
+
+  canvas.discardActiveObject();
+  canvas.requestRenderAll();
 }
 
 // PNG로 export (파일 다운로드)

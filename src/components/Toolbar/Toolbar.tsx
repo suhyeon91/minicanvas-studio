@@ -1,9 +1,9 @@
 import * as fabric from 'fabric';
 import { useEditorStore } from '../../store/editorStore';
 import { useRef } from 'react';
-import { exportJSON, exportPNG, importJSON } from '../../lib/canvas-utils';
-import { Square, Circle, Type, Minus, Pentagon, Undo2, Redo2, Save, FolderOpen, Download } from 'lucide-react';
- 
+import { Square, Circle, Type, Minus, Pentagon, Undo2, Redo2, Save, FolderOpen, Download, Group, Ungroup } from 'lucide-react';
+import { exportJSON, exportPNG, importJSON, groupSelection, ungroupSelection } from '../../lib/canvas-utils';
+
 function ToolButton({
   active, onClick, title, children,
 }: {
@@ -36,6 +36,25 @@ export function Toolbar() {
   const refreshObjects = useEditorStore((state) => state.refreshObjects);
   const mode = useEditorStore((state) => state.mode);
   const setMode = useEditorStore((state) => state.setMode);
+  
+  const selectionType = useEditorStore((state) => state.selectionType);
+  const setSelectionType = useEditorStore((state) => state.setSelectionType);
+
+  const handleGroup = () => {
+    if (!canvas) return;
+    groupSelection(canvas);
+    refreshObjects();
+    pushHistory();
+    setSelectionType('group');
+  };
+
+  const handleUngroup = () => {
+    if (!canvas) return;
+    ungroupSelection(canvas);
+    refreshObjects();
+    pushHistory();
+    setSelectionType(null);
+  };
   
   const handleSave = () => {
     if (!canvas) return;
@@ -145,7 +164,22 @@ export function Toolbar() {
       </ToolButton>
 
       <div className="w-px h-6 bg-gray-200 mx-2" />
+      <ToolButton
+        onClick={handleGroup}
+        title="그룹으로 묶기"
+        active={false}
+      >
+        <Group size={18} className={selectionType === 'activeselection' ? '' : 'opacity-30'} />
+      </ToolButton>
+      <ToolButton
+        onClick={handleUngroup}
+        title="그룹 해제"
+        active={false}
+      >
+        <Ungroup size={18} className={selectionType === 'group' ? '' : 'opacity-30'} />
+      </ToolButton>
 
+      <div className="w-px h-6 bg-gray-200 mx-2" />
       {/* 파일 입출력 */}
       <ToolButton onClick={handleSave} title="JSON으로 저장">
         <Save size={18} />

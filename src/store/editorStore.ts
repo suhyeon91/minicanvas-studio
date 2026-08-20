@@ -19,6 +19,8 @@ interface EditorState {
   pushHistory: () => void;
   undo: () => void;
   redo: () => void;
+  selectionType: string | null; // 'activeselection' | 'group' | 'rect' 등
+  setSelectionType: (type: string | null) => void;
 }
 
 export const useEditorStore = create<EditorState>((set, get) => ({
@@ -29,6 +31,8 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   historyIndex: -1,
   isRestoring: false,
   mode: 'select',
+  selectionType: null,
+  setSelectionType: (type) => set({ selectionType: type }),
   setMode: (mode) => set({ mode }),
   setCanvas: (canvas) => set({ canvas }),
   setSelectedObject: (obj) => set({ selectedObject: obj }),

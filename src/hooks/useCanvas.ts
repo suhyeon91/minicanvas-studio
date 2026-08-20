@@ -8,7 +8,8 @@ export function useCanvas() {
   const setSelectedObject = useEditorStore((state) => state.setSelectedObject);
   const refreshObjects = useEditorStore((state) => state.refreshObjects);
   const pushHistory = useEditorStore((state) => state.pushHistory);
-
+  const setSelectionType = useEditorStore((state) => state.setSelectionType);
+  
   useEffect(() => {
     if (!canvasElRef.current) return;
 
@@ -22,12 +23,15 @@ export function useCanvas() {
 
     fabricCanvas.on('selection:created', (e) => {
       setSelectedObject(e.selected[0] ?? null);
+      setSelectionType(fabricCanvas.getActiveObject()?.type ?? null);
     });
     fabricCanvas.on('selection:updated', (e) => {
       setSelectedObject(e.selected[0] ?? null);
+      setSelectionType(fabricCanvas.getActiveObject()?.type ?? null);
     });
     fabricCanvas.on('selection:cleared', () => {
       setSelectedObject(null);
+      setSelectionType(null);
     });
 
     // 오브젝트 추가/삭제 → 레이어 목록 갱신 + 히스토리 저장
